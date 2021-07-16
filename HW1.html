@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"
+        integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="//unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="//unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="//unpkg.com/vue2-leaflet"></script>
+    <script src="https://unpkg.com/vue@next"></script>
+
+
+    <title>Teams</title>
+    <style>
+        .map {
+            height: 100px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="container">
+            <div class="row">
+                <a href="#" class="btn btn-primary w-50 mx-auto my-3" @click="status = !status">
+                    <span v-if="status">清晰圖片</span>
+                    <span v-else>模糊圖片</span>
+                </a>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3" v-for="item in infoData">
+                    <div class="card">
+                        <img :src="item.picture.medium" class="card-img-top" :alt="item.name.last" v-if="status">
+                        <img :src="item.picture.large" class="card-img-top" :alt="item.name.last" v-else>
+
+
+                        <div class="card-body">
+                            <div class="accordion" id="accordionExample">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingOne">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseOne" aria-expanded="true"
+                                            aria-controls="collapseOne">
+                                            {{ item.name.last }}
+                                        </button>
+                                    </h2>
+                                    <div id="collapseOne" class="accordion-collapse collapse"
+                                        aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                        <div class="accordion-body">
+
+                                            <p class="card-title">Email: {{ item.email }}</p>
+                                            <p class="card-text">Phone: {{ item.phone }}</p>
+                                            <p class="card-text">Cell: {{ item.cell }}</p>
+                                            <p class="card-text">City: {{ item.location.city }}</p>
+                                            <p class="card-text">State: {{ item.location.state }}</p>
+                                            <p class="card-text">Country: {{ item.location.country }}</p>
+                                            <p class="card-text">Postcode: {{ item.location.postcode }}</p>
+                                            <p class="card-text">Address: {{ item.location.street.name }}</p>
+                                            <p>dob: {{ item.dob.date }}</p>
+                                            <p>registered: {{ item.registered.date }}</p>
+                                            <iframe width="100%" height="300" frameborder="0" scrolling="no"
+                                                marginheight="0" marginwidth="0"
+                                                :src=`https://maps.google.com.tw/maps?f=q&hl=zh-TW&geocode=&q=${item.location.coordinates.latitude},${item.location.coordinates.longitude}&z=10&output=embed`></iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js"
+        integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8"
+        crossorigin="anonymous"></script>
+
+    <script>
+
+        // import { createApp } from "https://cdnjs.cloudflare.com/ajax/libs/vue/3.1.4/vue.esm-browser.min.js";
+
+        // Vue.component('l-map', window.Vue2Leaflet.LMap);
+        Vue.createApp({
+            data: function () {
+                return {
+                    status: true,
+                    infoData: []
+                };
+            },
+            mounted: function () {
+                axios.get("https://randomuser.me/api/?results=30")
+                    .then(result => {
+                        this.infoData = result.data.results;
+                        console.log(this.infoData);
+                        console.log(this);
+                    })
+            }
+        }).mount("#app");
+
+    </script>
+
+</body>
+
+</html>
